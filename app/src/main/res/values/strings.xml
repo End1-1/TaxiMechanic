@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TaxiMechanic</string>
+    <string name="Mechanic">МЕХАНИК</string>
+    <string name="Nickname">ПОЛЬЗОВАТЕЛЬ</string>
+    <string name="Password">ПАРОЛЬ</string>
+    <string name="Login">ВХОД</string>
+    <string name="Empty"></string>
 </resources>

@@ -3,4 +3,31 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorWhiteTransparent">#CCffffff</color>
+    <color name="colorGray">#505050</color>
+    <color name="colorGrayLight2">#dddddd</color>
+    <color name="colorGrayTransparent">#CC505050</color>
+    <color name="colorGrayLight">#ededed</color>
+    <color name="colorYellow">#ffff00</color>
+    <color name="colorRed">#ff0000</color>
+    <color name="colorGreenLight">#50aa50</color>
+    <color name="colorBackground1">#180053</color>
+    <color name="colorBackground2">#ededed</color>
+    <color name="colorBackground3">#ebebeb</color>
+    <color name="colorButtonBgYellow">#ffaf00</color>
+    <color name="colorButtonBgGreen">#00c513</color>
+    <color name="colorFiolet">#29008b</color>
+    <color name="colorFioletBlack">#3c1795</color>
+    <color name="colorIntro">#180053</color>
+
+    <color name="switchTrack">#ffd600</color>
+    <color name="switchTrackDisable">#90caf9</color>
+    <color name="switchTrackActive">#1565c0</color>
+    <color name="switchTrackNormal">#90caf9</color>
+    <color name="switchThumbBgActive">#1b5e20</color>
+    <color name="switchThumbActive">#ad1457</color>
+    <color name="switchThumbkNormal">#64b5f6</color>
+
+
 </resources>
