@@ -1,8 +1,10 @@
 package com.taximechanic;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -45,6 +47,32 @@ public class BaseActivity extends AppCompatActivity implements WebResponse,
             pd.dismiss();
             pd = null;
         }
+    }
+
+    public AlertDialog alertDialog(int title, int message) {
+        String strTitle = "";
+        if (title > 0) {
+            strTitle = getString(title);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(message))
+                .setTitle(strTitle);
+        builder.setCancelable(false);
+        builder.setNeutralButton(R.string.OK, null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
+    }
+
+    public AlertDialog alertDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setTitle(title);
+        builder.setCancelable(false);
+        builder.setNeutralButton(R.string.OK, null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
     }
 
     @Override

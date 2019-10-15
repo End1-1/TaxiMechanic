@@ -5,4 +5,27 @@
     <string name="Password">ПАРОЛЬ</string>
     <string name="Login">ВХОД</string>
     <string name="Empty"></string>
+    <string name="OK">Понятно</string>
+    <string name="Error">Ошибка</string>
+    <string name="Yes">Да</string>
+    <string name="No">Нет</string>
+    <string name="ExplainWhyNo">Поясните, почему нет</string>
+    <string name="Front">Перед</string>
+    <string name="Back">Зад</string>
+    <string name="RightSide">Справа</string>
+    <string name="LeftSide">Слева</string>
+    <string name="GrandExternalStoragePermission">Вы должны разрешить запись файлов на устройство для продолжения работы.</string>
+    <string name="Save">Сохранить</string>
+    <string name="NotAllChecked">Не на все вопросы даны ответы</string>
+    <string name="NotAllPhotos">Не все стороны сфотографированы</string>
+    <string name="TicketN">Путевой лист №</string>
+    <string name="TicketIsEmpty">Номер путегого листа отсутствует</string>
+    <string name="LastName">Фамилия</string>
+    <string name="FirstName">Имя</string>
+    <string name="Saved">Сохранено</string>
+    <string name="CouldNotSaved">Не сохранено</string>
+    <string name="PhoneNumber">Тел. номер</string>
+    <string name="Email">Эл. Почта</string>
+    <string name="UpdateProfile">Сохранить изменения</string>
+    <string name="Saving">Сохранение</string>
 </resources>

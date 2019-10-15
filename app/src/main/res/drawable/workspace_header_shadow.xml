@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- Drop Shadow Stack -->
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+
+            <solid android:color="#00CCCCCC" />
+
+            <corners android:topLeftRadius="0dp" android:topRightRadius="1dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="1dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+
+            <solid android:color="#10CCCCCC" />
+
+            <corners android:topLeftRadius="0dp" android:topRightRadius="1dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="1dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+
+            <solid android:color="#20CCCCCC" />
+
+            <corners android:topLeftRadius="0dp" android:topRightRadius="1dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="1dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+
+            <solid android:color="#30CCCCCC" />
+
+            <corners android:topLeftRadius="0dp" android:topRightRadius="1dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="1dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+
+            <solid android:color="#50CCCCCC" />
+
+            <corners android:topLeftRadius="0dp" android:topRightRadius="1dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="1dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+
+            <solid android:color="#50CCCCCC" />
+
+            <corners android:topLeftRadius="0dp" android:topRightRadius="1dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="1dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+
+            <solid android:color="#10000000" />
+
+            <corners android:topLeftRadius="0dp" android:topRightRadius="1dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="1dp"/>
+        </shape>
+    </item>
+
+    <!-- Background -->
+    <item>
+        <shape>
+            <solid android:color="@android:color/white" />
+            <corners android:topLeftRadius="0dp" android:topRightRadius="0dp"
+                android:bottomLeftRadius="0dp" android:bottomRightRadius="0dp"/>
+        </shape>
+    </item>
+
+</layer-list>

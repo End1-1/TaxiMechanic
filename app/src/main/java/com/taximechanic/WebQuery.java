@@ -19,13 +19,15 @@ import javax.net.ssl.HttpsURLConnection;
 public class WebQuery extends AsyncTask<Void, Void, Integer> {
 
     //public static final String mHostUrl = "http://192.168.0.203";
-    //public static final String mHostUrl = "http://195.191.155.164:29999";
-    public static final String mHostUrl = "http://10.1.0.2";
+    public static final String mHostUrl = "http://195.191.155.164:29999";
+    //public static final String mHostUrl = "http://10.1.0.2";
     public static final String mHostUrlAuthNick = mHostUrl + "/api/driver/auth";
     public static final String mHostUrlDriverReady = mHostUrl + "/api/driver/order-ready";
     public static final String mHostUrlAuthPhone = mHostUrl + "/api/driver/auth/phone";
     public static final String mHostUrlDriverUpdateProfile = mHostUrl + "/api/driver/profile/update/3";
     public static final String mHostUrlMechanicAuth = mHostUrl + "/api/mechanic/login";
+    public static final String mHostUrlMechanicUpdate = mHostUrl + "/api/mechanic/mechanic-info";
+    public static final String mHostUrlMechanicReport = mHostUrl + "/api/mechanic/report";
     //public static String mGeocoderApiKey = "45b3aaf3-6d70-459d-980e-30269585db64"; //real
     public static String mGeocoderApiKey = "101f3900-d4f7-45fc-8796-62e0f5db942f"; //fake
     // mSiteKey stored in oauth_clients, NewYellowTaxi Password Grant Client

@@ -8,5 +8,8 @@ public interface WebResponse {
     int mResponseDriverOn = 5;
     int mResponseDriverOff = 6;
     int mResponseAuthMechanic = 7;
+    int mResponseMechanicUpdate = 8;
+    int getmResponseMechanicSaveReport = 9;
+
     void webResponse(int code, int webResponse, String s);
 }
