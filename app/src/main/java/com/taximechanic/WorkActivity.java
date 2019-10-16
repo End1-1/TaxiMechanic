@@ -165,10 +165,10 @@ public class WorkActivity extends BaseActivity {
         mPhotoBack = "";
         mPhotoFront = "";
         mPhotoName = "";
-        ((ImageView) findViewById(R.id.ivLeft)).setImageBitmap(null);
-        ((ImageView) findViewById(R.id.ivRight)).setImageBitmap(null);
-        ((ImageView) findViewById(R.id.ivFront)).setImageBitmap(null);
-        ((ImageView) findViewById(R.id.ivBack)).setImageBitmap(null);
+        ((ImageView) findViewById(R.id.ivLeft)).setImageDrawable(getDrawable(R.drawable.camera));
+        ((ImageView) findViewById(R.id.ivRight)).setImageDrawable(getDrawable(R.drawable.camera));
+        ((ImageView) findViewById(R.id.ivFront)).setImageDrawable(getDrawable(R.drawable.camera));
+        ((ImageView) findViewById(R.id.ivBack)).setImageDrawable(getDrawable(R.drawable.camera));
     }
 
     @Override
