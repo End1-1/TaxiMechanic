@@ -134,6 +134,7 @@
                         android:id="@+id/ivFront"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:adjustViewBounds="true"
                         android:scaleType="fitXY"
                         app:srcCompat="@drawable/camera" />
 
@@ -159,6 +160,7 @@
                         android:id="@+id/ivBack"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:adjustViewBounds="true"
                         android:scaleType="fitXY"
                         app:srcCompat="@drawable/camera" />
 
@@ -183,6 +185,7 @@
                         android:id="@+id/ivRight"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:adjustViewBounds="true"
                         android:scaleType="fitXY"
                         app:srcCompat="@drawable/camera" />
 
@@ -207,6 +210,7 @@
                         android:id="@+id/ivLeft"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:adjustViewBounds="true"
                         android:scaleType="fitXY"
                         app:srcCompat="@drawable/camera" />
 

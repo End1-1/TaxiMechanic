@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -132,8 +133,8 @@ public class WorkActivity extends BaseActivity {
         if (!createProgressDialog(R.string.Empty, R.string.Saving)) {
             return;
         }
-        WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicReport, WebQuery.mMethodPost, WebResponse.getmResponseMechanicSaveReport);
-        wq.mWebResponse = this;
+        HttpPost wq = new HttpPost(WebQuery.mHostUrlMechanicReport, WebResponse.getmResponseMechanicSaveReport);
+        wq.mListener = this;
         wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
         wq.setParameter("waybill_number", etTicket.getText().toString());
         for (int i = 0; i < mQuestions.size(); i++) {
@@ -143,8 +144,11 @@ public class WorkActivity extends BaseActivity {
                 wq.setParameter(q.mFieldName + "_comment", q.mComment);
             }
         }
-        wq.setParameter("image[]", "kk");
-        wq.request();
+        wq.setFile("image[]", mPhotoBack);
+        wq.setFile("image[]", mPhotoFront);
+        wq.setFile("image[]", mPhotoLeft);
+        wq.setFile("image[]", mPhotoRight);
+        wq.post();
     }
 
     public void clearReport() {
@@ -234,10 +238,20 @@ public class WorkActivity extends BaseActivity {
         Bitmap b;
         Matrix mat = new Matrix();
         mat.postRotate(angle);
+        mat.setScale(0.2f, 0.2f);
 
         Bitmap bm = BitmapFactory.decodeFile(fileName);
         b = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mat, true);
         img.setImageBitmap(b);
+        File f = new File(fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            b.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createDirectory() {
