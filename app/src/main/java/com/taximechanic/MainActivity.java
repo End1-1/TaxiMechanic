@@ -66,9 +66,11 @@ public class MainActivity extends BaseActivity {
                 wq.mWebResponse = this;
                 wq.setParameter("username", etUsername.getText().toString());
                 wq.setParameter("password", etPassword.getText().toString());
-                wq.setParameter("client_id", "5");
+                wq.setParameter("client_id", "3");
                 wq.setParameter("client_secret", WebQuery.mSiteKey);
                 wq.setParameter("guard", "system_workers_api");
+                wq.setParameter("provider", "system_workers_api");
+                wq.setParameter("grant_type", "password");
                 wq.request();
         }
     }
@@ -93,13 +95,13 @@ public class MainActivity extends BaseActivity {
     public void parseAuthentication(String s) {
         try {
             JSONObject jo = new JSONObject(s);
-            JSONObject jmechanic = jo.getJSONObject("mechanic");
+            JSONObject jmechanic = jo.getJSONObject("worker");
             Config.setInt(this, "mech_id", jmechanic.getInt("system_worker_id"));
-            Config.setString(this, "mech_fname", jmechanic.getString("mechanic_name"));
-            Config.setString(this, "mech_lname", jmechanic.getString("mechanic_surname"));
-            Config.setString(this, "mech_phone", jmechanic.getString("mechanic_phone"));
-            Config.setString(this, "mech_email", jmechanic.getString("mechanic_email"));
-            Config.setString(this, "mech_nick", jmechanic.getString("mechanic_nickname"));
+            Config.setString(this, "mech_fname", jmechanic.getString("worker_name"));
+            Config.setString(this, "mech_lname", jmechanic.getString("worker_surname"));
+            Config.setString(this, "mech_phone", jmechanic.getString("worker_phone"));
+            Config.setString(this, "mech_email", jmechanic.getString("worker_email"));
+            Config.setString(this, "mech_nick", jmechanic.getString("worker_nickname"));
             JSONArray jquestions = jo.getJSONArray("questions");
             WorkActivity.mQuestions.clear();
             for (int i = 0; i < jquestions.length(); i++) {

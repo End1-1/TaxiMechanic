@@ -53,7 +53,7 @@ public class ProfileActivity extends BaseActivity  {
         if (webResponseCode == 200) {
             Config.setString(this, "mech_nick", edDriverNick.getText().toString());
             Config.setString(this, "mech_fname", edDriverName.getText().toString());
-            Config.setString(this, "mech_lname", edDriverPhone.getText().toString());
+            Config.setString(this, "mech_lname", edDriverLastName.getText().toString());
             Config.setString(this, "mech_email", edDriverEmail.getText().toString());
             Config.setString(this, "mech_phone", edDriverPhone.getText().toString());
             alertDialog(R.string.Empty, R.string.Saved);

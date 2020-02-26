@@ -28,4 +28,5 @@
     <string name="Email">Эл. Почта</string>
     <string name="UpdateProfile">Сохранить изменения</string>
     <string name="Saving">Сохранение</string>
+    <string name="Comments">Коментарии</string>
 </resources>

@@ -233,6 +233,25 @@
                 android:layout_weight="1"
                 android:background="@color/colorGrayLight2" />
 
+            <EditText
+                android:id="@+id/etComments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/Comments"
+                android:lines="3"
+                android:inputType="textMultiLine" />
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sepviewheight"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="13dp"
+                android:layout_weight="1"
+                android:background="@color/colorGrayLight2" />
+
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="match_parent"

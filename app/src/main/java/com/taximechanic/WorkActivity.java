@@ -37,6 +37,7 @@ public class WorkActivity extends BaseActivity {
     private String mPhotoRight = "";
     private String mPhotoLeft = "";
     private EditText etTicket;
+    private EditText etComments;
 
     public enum F_PHOTO {
         F_FRONT(1),
@@ -70,6 +71,7 @@ public class WorkActivity extends BaseActivity {
         findViewById(R.id.btnSave).setOnClickListener(this);
         findViewById(R.id.imgProfile).setOnClickListener(this);
         etTicket = findViewById(R.id.etTicket);
+        etComments = findViewById(R.id.etComments);
     }
 
     @Override
@@ -137,6 +139,7 @@ public class WorkActivity extends BaseActivity {
         wq.mListener = this;
         wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
         wq.setParameter("waybill_number", etTicket.getText().toString());
+        wq.setParameter("comment", etComments.getText().toString());
         for (int i = 0; i < mQuestions.size(); i++) {
             Question q = mQuestions.get(i);
             wq.setParameter(q.mFieldName, q.mYes ? "1" : "0");
@@ -165,6 +168,7 @@ public class WorkActivity extends BaseActivity {
         mPhotoBack = "";
         mPhotoFront = "";
         mPhotoName = "";
+        etComments.setText("");
         ((ImageView) findViewById(R.id.ivLeft)).setImageDrawable(getDrawable(R.drawable.camera));
         ((ImageView) findViewById(R.id.ivRight)).setImageDrawable(getDrawable(R.drawable.camera));
         ((ImageView) findViewById(R.id.ivFront)).setImageDrawable(getDrawable(R.drawable.camera));
