@@ -21,12 +21,12 @@ public class Question {
     public Question(JSONObject jo) {
         init();
         try {
-            mId = jo.getInt("question_id");
+            mId = jo.getInt("id");
             mQuestion = jo.getString("question");
-            mFieldName = jo.getString("field_name");
+            //mFieldName = jo.getString("field_name");
             mComment = "";
-            mCreatedAt = jo.getString("created_at");
-            mUpdatedAt = jo.getString("updated_at");
+//            mCreatedAt = jo.getString("created_at");
+//            mUpdatedAt = jo.getString("updated_at");
         } catch (JSONException e) {
             e.printStackTrace();
         }

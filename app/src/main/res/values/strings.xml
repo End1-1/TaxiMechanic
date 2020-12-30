@@ -29,4 +29,5 @@
     <string name="UpdateProfile">Сохранить изменения</string>
     <string name="Saving">Сохранение</string>
     <string name="Comments">Коментарии</string>
+    <string name="Speedometer">Спидометр</string>
 </resources>

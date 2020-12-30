@@ -1,6 +1,7 @@
 package com.taximechanic;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,22 +12,30 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class WebQuery extends AsyncTask<Void, Void, Integer> {
 
     public static final String mBoundary = "jdjd77d749aqlpo4ksasdvoi947871d--";
-    //public static final String mHostUrl = "http://192.168.0.203";
+    public static final String mHostUrl = "https://192.168.0.204";
     //public static final String mHostUrl = "http://195.191.155.164:29999";
-    public static final String mHostUrl = "https://newyellowtaxi.com";
+    //public static final String mHostUrl = "https://newyellowtaxi.com";
     public static final String mHostUrlAuthNick = mHostUrl + "/api/driver/auth";
     public static final String mHostUrlDriverReady = mHostUrl + "/api/driver/order-ready";
     public static final String mHostUrlAuthPhone = mHostUrl + "/api/driver/auth/phone";
     public static final String mHostUrlDriverUpdateProfile = mHostUrl + "/api/driver/profile/update/3";
-    public static final String mHostUrlMechanicAuth = mHostUrl + "/api/worker/login";
+    public static final String mHostUrlMechanicAuth = mHostUrl + "/api/worker/auth";
+    public static final String mHostUrlMechanicQuestions = mHostUrl + "/api/worker/questions";
     public static final String mHostUrlMechanicUpdate = mHostUrl + "/api/worker/worker-info";
     public static final String mHostUrlMechanicReport = mHostUrl + "/api/worker/report";
     //public static String mGeocoderApiKey = "45b3aaf3-6d70-459d-980e-30269585db64"; //real
@@ -52,6 +61,7 @@ public class WebQuery extends AsyncTask<Void, Void, Integer> {
         mUrl = url;
         mMethod = method;
         mResultCode = resultCode;
+        initSSLNoVerify();
     }
 
     public void setParameter(String key, String value) {
@@ -64,6 +74,39 @@ public class WebQuery extends AsyncTask<Void, Void, Integer> {
 
     public void request() {
         execute();
+    }
+
+
+    void initSSLNoVerify() {
+        try {
+            TrustManager[] victimizedManager = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            X509Certificate[] myTrustedAnchors = new X509Certificate[0];
+                            return myTrustedAnchors;
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, victimizedManager, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void requestGET() {
@@ -80,6 +123,10 @@ public class WebQuery extends AsyncTask<Void, Void, Integer> {
             }
             URL url = new URL(mUrl);
             HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+            con.setRequestProperty("Accept", "application/json");
+            for (Map.Entry<String, String> e: mHeaders.entrySet()) {
+                con.setRequestProperty(e.getKey(), e.getValue());
+            }
             mWebResponseCode = con.getResponseCode();
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String input;
@@ -107,11 +154,12 @@ public class WebQuery extends AsyncTask<Void, Void, Integer> {
         }
         try {
             URL url = new URL(mUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setConnectTimeout(4000);
             conn.setRequestMethod(mMethod);
             conn.setDoOutput(true);
             conn.setDoInput(true);
+            conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
             for (Map.Entry<String, String> e: mHeaders.entrySet()) {
                 conn.setRequestProperty(e.getKey(), e.getValue());

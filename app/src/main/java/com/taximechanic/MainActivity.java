@@ -66,11 +66,6 @@ public class MainActivity extends BaseActivity {
                 wq.mWebResponse = this;
                 wq.setParameter("username", etUsername.getText().toString());
                 wq.setParameter("password", etPassword.getText().toString());
-                wq.setParameter("client_id", "3");
-                wq.setParameter("client_secret", WebQuery.mSiteKey);
-                wq.setParameter("guard", "system_workers_api");
-                wq.setParameter("provider", "system_workers_api");
-                wq.setParameter("grant_type", "password");
                 wq.request();
         }
     }
@@ -96,20 +91,12 @@ public class MainActivity extends BaseActivity {
         try {
             JSONObject jo = new JSONObject(s);
             JSONObject jmechanic = jo.getJSONObject("worker");
-            Config.setInt(this, "mech_id", jmechanic.getInt("system_worker_id"));
-            Config.setString(this, "mech_fname", jmechanic.getString("worker_name"));
-            Config.setString(this, "mech_lname", jmechanic.getString("worker_surname"));
-            Config.setString(this, "mech_phone", jmechanic.getString("worker_phone"));
-            Config.setString(this, "mech_email", jmechanic.getString("worker_email"));
-            Config.setString(this, "mech_nick", jmechanic.getString("worker_nickname"));
-            JSONArray jquestions = jo.getJSONArray("questions");
-            WorkActivity.mQuestions.clear();
-            for (int i = 0; i < jquestions.length(); i++) {
-                JSONObject jq = jquestions.getJSONObject(i);
-                WorkActivity.mQuestions.add(new Question(jq));
-            }
+            Config.setInt("mech_id", jmechanic.getInt("id"));
+            Config.setString("mech_fname", jmechanic.getString("name"));
+            Config.setString("mech_lname", jmechanic.getString("surname"));
+            Config.setString("mech_email", jmechanic.getString("email"));
             JSONObject jbearer = jo.getJSONObject("bearer");
-            Config.setBearerKey(this, jbearer.getString("access_token"));
+            Config.setBearerKey(jbearer.getString("token"));
             Intent intent = new Intent(this, WorkActivity.class);
             startActivity(intent);
         } catch (JSONException e) {

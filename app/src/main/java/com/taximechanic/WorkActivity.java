@@ -1,5 +1,6 @@
 package com.taximechanic;
 
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,12 +24,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.taximechanic.databinding.ActivityWorkBinding;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class WorkActivity extends BaseActivity {
+
+    private ActivityWorkBinding bind;
 
     private File mDirectory;
     private String mPhotoName = "";
@@ -58,7 +66,8 @@ public class WorkActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work);
+        bind = ActivityWorkBinding.inflate(getLayoutInflater());
+        setContentView(bind.getRoot());
         createDirectory();
         mQuestionsAdapter = new QuestionsAdapter();
         RecyclerView rv = findViewById(R.id.rvQuestions);
@@ -72,6 +81,16 @@ public class WorkActivity extends BaseActivity {
         findViewById(R.id.imgProfile).setOnClickListener(this);
         etTicket = findViewById(R.id.etTicket);
         etComments = findViewById(R.id.etComments);
+
+        WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicQuestions, WebQuery.mMethodGet, WebResponse.getQuestions);
+        wq.mWebResponse = this;
+        wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
+        wq.request();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -139,18 +158,22 @@ public class WorkActivity extends BaseActivity {
         wq.mListener = this;
         wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
         wq.setParameter("waybill_number", etTicket.getText().toString());
-        wq.setParameter("comment", etComments.getText().toString());
+        wq.setParameter("data[speedometer]", bind.etSpeedometer.getText().toString());
+        wq.setParameter("data[comment]", etComments.getText().toString());
         for (int i = 0; i < mQuestions.size(); i++) {
+//            Question q = mQuestions.get(i);
+//            wq.setParameter(q.mFieldName, q.mYes ? "1" : "0");
+//            if (!q.mComment.isEmpty()) {
+//                wq.setParameter(q.mFieldName + "_comment", q.mComment);
+//            }
             Question q = mQuestions.get(i);
-            wq.setParameter(q.mFieldName, q.mYes ? "1" : "0");
-            if (!q.mComment.isEmpty()) {
-                wq.setParameter(q.mFieldName + "_comment", q.mComment);
-            }
+            wq.setParameter(String.format("question[%s][verify]",q.mId), q.mYes ? "1" : "0");
+            wq.setParameter(String.format("question[%s][comment]", q.mId), q.mComment);
         }
-        wq.setFile("image[]", mPhotoBack);
-        wq.setFile("image[]", mPhotoFront);
-        wq.setFile("image[]", mPhotoLeft);
-        wq.setFile("image[]", mPhotoRight);
+        wq.setFile("images[]", mPhotoBack);
+        wq.setFile("images[]", mPhotoFront);
+        wq.setFile("images[]", mPhotoLeft);
+        wq.setFile("images[]", mPhotoRight);
         wq.post();
     }
 
@@ -189,6 +212,19 @@ public class WorkActivity extends BaseActivity {
             case WebResponse.getmResponseMechanicSaveReport:
                 clearReport();
                 alertDialog(R.string.Empty, R.string.Saved);
+                break;
+            case WebResponse.getQuestions:
+                try {
+                    JSONArray jquestions = new JSONArray(s);
+                    WorkActivity.mQuestions.clear();
+                    for (int i = 0; i < jquestions.length(); i++) {
+                        JSONObject jq = jquestions.getJSONObject(i);
+                        WorkActivity.mQuestions.add(new Question(jq));
+                    }
+                    mQuestionsAdapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }

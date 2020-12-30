@@ -21,11 +21,11 @@ public class ProfileActivity extends BaseActivity  {
         edDriverPhone = findViewById(R.id.edPhoneNumber);
         edDriverEmail = findViewById(R.id.edEmail);
         edDriverLastName = findViewById(R.id.edDriverLastName);
-        edDriverNick.setText(Config.getString(this, "mech_nick"));
-        edDriverName.setText(Config.getString(this, "mech_fname"));
-        edDriverLastName.setText(Config.getString(this, "mech_lname"));
-        edDriverPhone.setText(Config.getString(this, "mech_phone"));
-        edDriverEmail.setText(Config.getString(this, "mech_email"));
+        edDriverNick.setText(Config.getString("mech_nick"));
+        edDriverName.setText(Config.getString("mech_fname"));
+        edDriverLastName.setText(Config.getString("mech_lname"));
+        edDriverPhone.setText(Config.getString("mech_phone"));
+        edDriverEmail.setText(Config.getString("mech_email"));
         findViewById(R.id.btnSave).setOnClickListener(this);
     }
 
@@ -51,11 +51,11 @@ public class ProfileActivity extends BaseActivity  {
     public void webResponse(int code, int webResponseCode, String s) {
         super.webResponse(code, webResponseCode, s);
         if (webResponseCode == 200) {
-            Config.setString(this, "mech_nick", edDriverNick.getText().toString());
-            Config.setString(this, "mech_fname", edDriverName.getText().toString());
-            Config.setString(this, "mech_lname", edDriverLastName.getText().toString());
-            Config.setString(this, "mech_email", edDriverEmail.getText().toString());
-            Config.setString(this, "mech_phone", edDriverPhone.getText().toString());
+            Config.setString("mech_nick", edDriverNick.getText().toString());
+            Config.setString("mech_fname", edDriverName.getText().toString());
+            Config.setString("mech_lname", edDriverLastName.getText().toString());
+            Config.setString("mech_email", edDriverEmail.getText().toString());
+            Config.setString("mech_phone", edDriverPhone.getText().toString());
             alertDialog(R.string.Empty, R.string.Saved);
         } else {
             alertDialog(getString(R.string.Empty), getString(R.string.CouldNotSaved) + "\r\n" + s);

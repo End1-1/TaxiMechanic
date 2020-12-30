@@ -10,6 +10,7 @@ public interface WebResponse {
     int mResponseAuthMechanic = 7;
     int mResponseMechanicUpdate = 8;
     int getmResponseMechanicSaveReport = 9;
+    int getQuestions = 10;
 
     void webResponse(int code, int webResponse, String s);
 }

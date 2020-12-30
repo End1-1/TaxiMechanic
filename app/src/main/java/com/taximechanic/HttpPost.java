@@ -1,6 +1,7 @@
 package com.taximechanic;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -16,6 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class HttpPost extends AsyncTask<Void, Void, Integer> {
 
@@ -60,12 +63,13 @@ public class HttpPost extends AsyncTask<Void, Void, Integer> {
     protected Integer doInBackground(Void... voids) {
         String boundary = "jdjd77d749aqlpo4ksasdvoi947871d--";
         try {
-            HttpURLConnection conn = (HttpURLConnection) mUrl.openConnection();
+            HttpsURLConnection conn = (HttpsURLConnection) mUrl.openConnection();
             conn.setConnectTimeout(4000);
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setUseCaches(false);
+            conn.setRequestProperty("Accept", "application/json");
             for (Map.Entry<String, String> e: mHeaders.entrySet()) {
                 conn.setRequestProperty(e.getKey(), e.getValue());
             }
@@ -121,6 +125,7 @@ public class HttpPost extends AsyncTask<Void, Void, Integer> {
                 sb.append(inputLine);
             }
             mResponseText = sb.toString();
+            Log.d("HTTP POST", String.format("%d -> %s", mRequestCode, mResponseText));
         } catch (IOException e) {
             e.printStackTrace();
             mWebResponseCode = 0;
