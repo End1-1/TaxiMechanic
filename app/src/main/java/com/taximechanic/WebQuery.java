@@ -27,9 +27,9 @@ import javax.net.ssl.X509TrustManager;
 public class WebQuery extends AsyncTask<Void, Void, Integer> {
 
     public static final String mBoundary = "jdjd77d749aqlpo4ksasdvoi947871d--";
-    public static final String mHostUrl = "https://192.168.0.204";
+    //public static final String mHostUrl = "https://192.168.0.204";
     //public static final String mHostUrl = "http://195.191.155.164:29999";
-    //public static final String mHostUrl = "https://newyellowtaxi.com";
+    public static final String mHostUrl = "https://newyellowtaxi.com";
     public static final String mHostUrlAuthNick = mHostUrl + "/api/driver/auth";
     public static final String mHostUrlDriverReady = mHostUrl + "/api/driver/order-ready";
     public static final String mHostUrlAuthPhone = mHostUrl + "/api/driver/auth/phone";
