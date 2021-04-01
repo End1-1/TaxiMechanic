@@ -62,8 +62,7 @@ public class MainActivity extends BaseActivity {
                 if (!createProgressDialog(R.string.Empty, R.string.Login)) {
                     return;
                 }
-                WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicAuth, WebQuery.mMethodPost, WebResponse.mResponseAuthMechanic);
-                wq.mWebResponse = this;
+                WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicAuth, WebQuery.HttpMethod.POST, WebResponse.mResponseAuthMechanic, this);
                 wq.setParameter("username", etUsername.getText().toString());
                 wq.setParameter("password", etPassword.getText().toString());
                 wq.request();

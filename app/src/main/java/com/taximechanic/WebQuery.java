@@ -1,34 +1,53 @@
 package com.taximechanic;
 
-import android.os.AsyncTask;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 
-import java.io.BufferedReader;
+import org.conscrypt.Conscrypt;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
+import java.security.Security;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-public class WebQuery extends AsyncTask<Void, Void, Integer> {
+import okhttp3.FormBody;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.Buffer;
+import okio.BufferedSink;
+import okio.ByteString;
 
-    public static final String mBoundary = "jdjd77d749aqlpo4ksasdvoi947871d--";
-    //public static final String mHostUrl = "https://192.168.0.204";
-    //public static final String mHostUrl = "http://195.191.155.164:29999";
+import static org.apache.http.conn.ssl.SSLSocketFactory.SSL;
+
+public class WebQuery {
+
+    public enum  HttpMethod {
+        GET,
+        POST,
+        PUT
+    }
+
     public static final String mHostUrl = "https://newyellowtaxi.com";
     public static final String mHostUrlAuthNick = mHostUrl + "/api/driver/auth";
     public static final String mHostUrlDriverReady = mHostUrl + "/api/driver/order-ready";
@@ -43,172 +62,166 @@ public class WebQuery extends AsyncTask<Void, Void, Integer> {
     // mSiteKey stored in oauth_clients, NewYellowTaxi Password Grant Client
     public static final String mSiteKey = "fhMTzPCAQJT2pHXAyuMq1UltFWfJ9AtbeWcNPbdc";
 
-    public WebResponse mWebResponse = null;
-
-    public static final String mMethodGet = "GET";
-    public static final String mMethodPost = "POST";
-    public static final String mMethodPut = "PUT";
 
     private String mUrl;
-    private String mMethod;
-    private String mResult;
-    private int mResultCode;
+    private HttpMethod mMethod;
+    private int mResponseCode;
+    private WebResponse mWebResponse;
+    private Map<String, String> mHeader;
+    private Map<String, String> mParameters;
+    private String mData;
     private int mWebResponseCode;
-    private Map<String, String> mParameters = new LinkedHashMap<>();
-    private Map<String, String> mHeaders = new LinkedHashMap<>();
+    private String mOutputData;
+    private Map<String, List<String>> mFiles;
 
-    public WebQuery(String url, String method, int resultCode) {
+    public WebQuery(String url, HttpMethod method, int responseCode, WebResponse r) {
+        mData = "";
+        mOutputData = "";
+        mWebResponseCode = 0;
+        mHeader = new HashMap<>();
+        mParameters = new HashMap<>();
+        mFiles = new LinkedHashMap<>();
         mUrl = url;
         mMethod = method;
-        mResultCode = resultCode;
-        initSSLNoVerify();
+        mResponseCode = responseCode;
+        mWebResponse = r;
+
+        setHeader("Authorization", "Bearer " + Config.mBearerKey);
+        setHeader("Accept", "application/json");
     }
 
-    public void setParameter(String key, String value) {
+    public WebQuery setHeader(String key, String value) {
+        mHeader.put(key, value);
+        return this;
+    }
+
+    public WebQuery setParameter(String key, String value) {
         mParameters.put(key, value);
+        return this;
     }
 
-    public void setHeader(String key, String value) {
-        mHeaders.put(key, value);
+    public WebQuery setFile(String key, String value) {
+        if (!mFiles.containsKey(key)) {
+            mFiles.put(key, new LinkedList<>());
+        }
+        mFiles.get(key).add(value);
+        return this;
+    }
+
+    private RequestBody getBody() {
+        String boundary = "jdjd77d749aqlpo4ksasdvoi947871d--";
+
+        MultipartBody.Builder form = new MultipartBody.Builder();
+        form.setType(MultipartBody.FORM);
+        for (Map.Entry<String, String> e: mParameters.entrySet()) {
+            form.addFormDataPart(e.getKey(), e.getValue());
+        }
+       for (Map.Entry<String, List<String>> e: mFiles.entrySet()) {
+            for (String fn: e.getValue()) {
+                String[] fileName = fn.split("/");
+                String formFileName = fileName[fileName.length - 1];
+                form.addFormDataPart(e.getKey(), formFileName, RequestBody.create(MediaType.parse("image/jpeg"), new File(fn)));
+            }
+        }
+        RequestBody rb = form.build();
+        return rb;
     }
 
     public void request() {
-        execute();
+        Security.insertProviderAt(Conscrypt.newProvider(), 1);
+        OkHttpClient httpClient = getUnsafeOkHttpClient();
+        Request.Builder builder = new Request.Builder();
+        builder.url(mUrl);
+        for (Map.Entry<String, String> e: mHeader.entrySet()) {
+            builder.addHeader(e.getKey(), e.getValue());
+        }
+        switch (mMethod) {
+            case GET:
+                builder.get();
+                break;
+            case POST:
+                builder.post(getBody());
+                break;
+        }
+        Thread thread = new Thread(() -> {
+            try {
+                System.out.println(mUrl);
+//                if (mMethod == HttpMethod.POST) {
+//                    final Buffer buffer = new Buffer();
+//                    getBody().writeTo(buffer);
+//                    System.out.println(buffer.readUtf8());
+//                }
+                Response response = httpClient.newCall(builder.build()).execute();
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + Integer.toString(response.code()) + " " + response.body().string());
+                }
+                mWebResponseCode = 200;
+                mOutputData = response.body().string();
+                System.out.println(mOutputData);
+            }
+            catch (Exception e) {
+                mOutputData = e.getMessage();
+                mWebResponseCode = 500;
+                System.out.println(mResponseCode);
+                e.printStackTrace();
+            }
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mWebResponse != null) {
+                        mWebResponse.webResponse(mResponseCode, mWebResponseCode, mOutputData);
+                    }
+                }
+            });
+        });
+        thread.start();
     }
 
+    public static WebQuery create(String url, HttpMethod method, int responseCode, WebResponse r) {
+        return new WebQuery(url, method, responseCode, r);
+    }
 
-    void initSSLNoVerify() {
+    private OkHttpClient getUnsafeOkHttpClient() {
         try {
-            TrustManager[] victimizedManager = new TrustManager[]{
+            final TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() {
-                            X509Certificate[] myTrustedAnchors = new X509Certificate[0];
-                            return myTrustedAnchors;
+
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain,
+                                                       String authType) throws
+                                CertificateException {
                         }
 
                         @Override
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
+                                                       String authType) throws
+                                CertificateException {
                         }
-
                         @Override
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
                         }
                     }
             };
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, victimizedManager, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+
+            final SSLContext sslContext = SSLContext.getInstance(SSL);
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+
+            builder.hostnameVerifier(new HostnameVerifier() {
                 @Override
-                public boolean verify(String s, SSLSession sslSession) {
+                public boolean verify(String hostname, SSLSession session) {
                     return true;
                 }
             });
+
+            return builder.build();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void requestGET() {
-        try {
-            String urlParameters = new String();
-            for (Map.Entry<String, String> e: mParameters.entrySet()) {
-                if (!urlParameters.isEmpty()) {
-                    urlParameters += "&";
-                }
-                urlParameters += e.getKey() + "=" + e.getValue();
-            }
-            if (urlParameters.length() > 0) {
-                mUrl += "?" + urlParameters;
-            }
-            URL url = new URL(mUrl);
-            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-            con.setRequestProperty("Accept", "application/json");
-            for (Map.Entry<String, String> e: mHeaders.entrySet()) {
-                con.setRequestProperty(e.getKey(), e.getValue());
-            }
-            mWebResponseCode = con.getResponseCode();
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String input;
-            mResult = new String();
-            while ((input = br.readLine()) != null){
-                mResult += input;
-            }
-            br.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            mResult = e.getMessage();
-        } catch (IOException e) {
-            e.printStackTrace();
-            mResult = e.getMessage();
-        }
-    }
-
-    private void requestPost() {
-        String urlParameters = new String();
-        for (Map.Entry<String, String> e: mParameters.entrySet()) {
-            if (!urlParameters.isEmpty()) {
-                urlParameters += "&";
-            }
-            urlParameters += e.getKey() + "=" + e.getValue();
-        }
-        try {
-            URL url = new URL(mUrl);
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-            conn.setConnectTimeout(4000);
-            conn.setRequestMethod(mMethod);
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
-            for (Map.Entry<String, String> e: mHeaders.entrySet()) {
-                conn.setRequestProperty(e.getKey(), e.getValue());
-            }
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("Content-Length", Integer.toString(urlParameters.getBytes(StandardCharsets.UTF_8).length));
-            OutputStream out = conn.getOutputStream();
-            out.write(urlParameters.getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            out.close();
-            mWebResponseCode = conn.getResponseCode();
-            InputStream is = null;
-            if (mWebResponseCode < 400) {
-                is =  conn.getInputStream();
-            } else {
-                is = conn.getErrorStream();
-            }
-            InputStreamReader ir = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(ir);
-            StringBuilder sb = new StringBuilder();
-            String inputLine;
-            while ((inputLine = br.readLine()) != null) {
-                sb.append(inputLine);
-            }
-            mResult = sb.toString();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            mResult = e.getMessage();
-        } catch (IOException e) {
-            e.printStackTrace();
-            mResult = e.getMessage();
-        }
-    }
-
-    @Override
-    protected Integer doInBackground(Void... voids) {
-        if (mMethod.equals(mMethodGet)) {
-            requestGET();
-        } else if (mMethod.equals(mMethodPost) || mMethod.equals(mMethodPut)) {
-            requestPost();
-        }
-        return mResultCode;
-    }
-
-    @Override
-    protected void onPostExecute(Integer aVoid) {
-        super.onPostExecute(aVoid);
-        if (mWebResponse != null) {
-            mWebResponse.webResponse(aVoid, mWebResponseCode, mResult);
+            throw new RuntimeException(e);
         }
     }
 }

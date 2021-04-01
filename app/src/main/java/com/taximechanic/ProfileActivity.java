@@ -34,8 +34,7 @@ public class ProfileActivity extends BaseActivity  {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.btnSave:
-                WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicUpdate, WebQuery.mMethodPut, WebResponse.mResponseMechanicUpdate);
-                wq.mWebResponse = this;
+                WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicUpdate, WebQuery.HttpMethod.PUT, WebResponse.mResponseMechanicUpdate, this);
                 wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
                 wq.setParameter("name", edDriverName.getText().toString());
                 wq.setParameter("surname", edDriverLastName.getText().toString());

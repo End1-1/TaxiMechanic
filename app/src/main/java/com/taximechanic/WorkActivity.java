@@ -82,8 +82,7 @@ public class WorkActivity extends BaseActivity {
         etTicket = findViewById(R.id.etTicket);
         etComments = findViewById(R.id.etComments);
 
-        WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicQuestions, WebQuery.mMethodGet, WebResponse.getQuestions);
-        wq.mWebResponse = this;
+        WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicQuestions, WebQuery.HttpMethod.GET, WebResponse.getQuestions, this);
         wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
         wq.request();
     }
@@ -154,8 +153,7 @@ public class WorkActivity extends BaseActivity {
         if (!createProgressDialog(R.string.Empty, R.string.Saving)) {
             return;
         }
-        HttpPost wq = new HttpPost(WebQuery.mHostUrlMechanicReport, WebResponse.getmResponseMechanicSaveReport);
-        wq.mListener = this;
+        WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicReport, WebQuery.HttpMethod.POST, WebResponse.getmResponseMechanicSaveReport, this);
         wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
         wq.setParameter("waybill_number", etTicket.getText().toString());
         wq.setParameter("data[speedometer]", bind.etSpeedometer.getText().toString());
@@ -174,7 +172,7 @@ public class WorkActivity extends BaseActivity {
         wq.setFile("images[]", mPhotoFront);
         wq.setFile("images[]", mPhotoLeft);
         wq.setFile("images[]", mPhotoRight);
-        wq.post();
+        wq.request();
     }
 
     public void clearReport() {

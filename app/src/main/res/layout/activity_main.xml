@@ -64,7 +64,7 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:text="admin1"
+                    android:text="vermalen"
                     android:textColor="@color/colorWhite"
                     android:textColorHint="@color/colorGrayLight"
                     app:backgroundTint="@color/colorWhite" />
