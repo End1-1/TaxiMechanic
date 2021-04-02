@@ -57,7 +57,6 @@ public class WorkActivity extends BaseActivity {
         F_PHOTO(int i) {
             this.mSide = i;
         }
-
     };
 
     public static ArrayList<Question> mQuestions = new ArrayList();
@@ -280,6 +279,9 @@ public class WorkActivity extends BaseActivity {
 
         Bitmap bm = BitmapFactory.decodeFile(fileName);
         b = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mat, true);
+        while (b.getByteCount() > 500000) {
+            b = Bitmap.createScaledBitmap(b, b.getWidth() / 2, b.getHeight() / 2, true);
+        }
         img.setImageBitmap(b);
         File f = new File(fileName);
         try {
