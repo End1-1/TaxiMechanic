@@ -1,7 +1,5 @@
 package com.taximechanic;
 
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,12 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -35,6 +34,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class WorkActivity extends BaseActivity {
+
+    private final int RESULT_SCANQR = 100;
 
     private ActivityWorkBinding bind;
 
@@ -78,6 +79,7 @@ public class WorkActivity extends BaseActivity {
         findViewById(R.id.ivLeft).setOnClickListener(this);
         findViewById(R.id.btnSave).setOnClickListener(this);
         findViewById(R.id.imgProfile).setOnClickListener(this);
+        bind.btnScanner.setOnClickListener(this);
         etTicket = findViewById(R.id.etTicket);
         etComments = findViewById(R.id.etComments);
         clearReport();
@@ -113,6 +115,9 @@ public class WorkActivity extends BaseActivity {
                 break;
             case R.id.imgProfile:
                 showProfile();
+                break;
+            case R.id.btnScanner:
+                scanCode();
                 break;
         }
     }
@@ -252,6 +257,9 @@ public class WorkActivity extends BaseActivity {
                 mPhotoLeft = mPhotoName;
                 previewImage(R.id.ivLeft, mPhotoName);
                 break;
+            case RESULT_SCANQR:
+                bind.etTicket.setText(data.getStringExtra("value"));
+                break;
         }
     }
 
@@ -301,6 +309,11 @@ public class WorkActivity extends BaseActivity {
         if (!mDirectory.exists()) {
             mDirectory.mkdirs();
         }
+    }
+
+    private void scanCode() {
+        Intent intent = new Intent(this, ScannerActivity.class);
+        startActivityForResult(intent, RESULT_SCANQR);
     }
 
     public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
