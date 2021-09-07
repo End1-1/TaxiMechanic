@@ -80,6 +80,7 @@ public class WorkActivity extends BaseActivity {
         findViewById(R.id.imgProfile).setOnClickListener(this);
         etTicket = findViewById(R.id.etTicket);
         etComments = findViewById(R.id.etComments);
+        clearReport();
 
         WebQuery wq = new WebQuery(WebQuery.mHostUrlMechanicQuestions, WebQuery.HttpMethod.GET, WebResponse.getQuestions, this);
         wq.setHeader("Authorization", "Bearer " + Config.mBearerKey);
@@ -189,6 +190,7 @@ public class WorkActivity extends BaseActivity {
         mPhotoFront = "";
         mPhotoName = "";
         etComments.setText("");
+        bind.etSpeedometer.setText("");
         ((ImageView) findViewById(R.id.ivLeft)).setImageDrawable(getDrawable(R.drawable.camera));
         ((ImageView) findViewById(R.id.ivRight)).setImageDrawable(getDrawable(R.drawable.camera));
         ((ImageView) findViewById(R.id.ivFront)).setImageDrawable(getDrawable(R.drawable.camera));
